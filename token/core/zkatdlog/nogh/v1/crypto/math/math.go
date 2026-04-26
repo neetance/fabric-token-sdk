@@ -122,6 +122,7 @@ func BatchInverse(elems []*mathlib.Zr, curve *mathlib.Curve) []*mathlib.Zr {
 		inv := make([]*mathlib.Zr, 1)
 		inv[0] = elems[0].Copy()
 		inv[0].InvModOrder()
+
 		return inv
 	}
 
@@ -144,7 +145,7 @@ func BatchInverse(elems []*mathlib.Zr, curve *mathlib.Curve) []*mathlib.Zr {
 		// acc = acc * elems[i]
 		curve.ModMulInPlace(acc, acc, elems[i], curve.GroupOrder)
 	}
-	
+
 	// acc now holds the inverse of elems[0].
 	// Since acc is fully independent (created by Copy() and mutated in place),
 	// we can safely place it directly into the result slice.

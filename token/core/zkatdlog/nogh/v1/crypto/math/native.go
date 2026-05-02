@@ -8,7 +8,6 @@ package math
 
 import (
 	"math/big"
-	"sync"
 
 	mathlib "github.com/IBM/mathlib"
 )
@@ -32,12 +31,6 @@ type GnarkFr[T any] interface {
 	Bytes() [32]byte
 }
 
-var bigIntPool = sync.Pool{
-	New: func() interface{} {
-		return new(big.Int)
-	},
-}
-
 // NativeElem allocates and returns a new zero-valued field element of type E.
 func NativeElem[T any, E GnarkFr[T]]() E { return E(new(T)) }
 
@@ -59,6 +52,7 @@ func SetNativeFromZr[T any, E GnarkFr[T]](z *mathlib.Zr, e E) {
 // NativeToZr converts a native field element back to *mathlib.Zr via byte representation.
 func NativeToZr[T any, E GnarkFr[T]](e E, curve *mathlib.Curve) *mathlib.Zr {
 	b := e.Bytes()
+
 	return curve.NewZrFromBytes(b[:])
 }
 
@@ -105,5 +99,6 @@ func DispatchCurve(curve *mathlib.Curve) (isBLS bool, isBN254 bool) {
 	case mathlib.BN254:
 		return false, true
 	}
+
 	return false, false
 }
